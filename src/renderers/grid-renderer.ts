@@ -43,10 +43,10 @@ export class GridRenderer extends BitmapCoordinatesPaneRenderer {
 				ctx.strokeStyle = data.vertLinesColor;
 				setLineStyle(ctx, data.vertLineStyle);
 				ctx.beginPath();
-				for (const timeMark of data.timeMarks) {
-					const x = Math.round(timeMark.coord * horizontalPixelRatio);
+				var xgrid = [ 0, window.innerWidth/3, window.innerWidth*2/3,  window.innerWidth ]
+				for (const x of xgrid) {
 					ctx.moveTo(x, -lineWidth);
-					ctx.lineTo(x, bitmapSize.height + lineWidth);
+					ctx.lineTo(x, bitmapSize.height + lineWidth);   
 				}
 				ctx.stroke();
 			}
@@ -54,10 +54,10 @@ export class GridRenderer extends BitmapCoordinatesPaneRenderer {
 				ctx.strokeStyle = data.horzLinesColor;
 				setLineStyle(ctx, data.horzLineStyle);
 				ctx.beginPath();
-				for (const priceMark of data.priceMarks) {
-					const y = Math.round(priceMark.coord * verticalPixelRatio);
+				var ygrid = [  window.innerHeight/7, window.innerHeight*2/7, window.innerHeight*3/7,  window.innerHeight*4/7,  window.innerHeight*7/10 - 1, window.innerHeight*7/10 + 28, window.innerHeight*6/7]
+				for (const y of ygrid) {
 					ctx.moveTo(-lineWidth, y);
-					ctx.lineTo(bitmapSize.width + lineWidth, y);
+					ctx.lineTo(bitmapSize.width + lineWidth, y);   
 				}
 				ctx.stroke();
 			}

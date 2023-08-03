@@ -1,6 +1,7 @@
 {
 	"extends": "./tsconfig.options.json",
 	"compilerOptions": {
+		"noImplicitAny": false,
 		"noEmit": true
 	},
 	"include": [

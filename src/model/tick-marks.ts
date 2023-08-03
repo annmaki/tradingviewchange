@@ -19,7 +19,7 @@ export class TickMarks {
 	private _marksByWeight: Map<TickMarkWeight, TickMark[]> = new Map();
 	private _cache: MarksCache | null = null;
 
-	public setTimeScalePoints(newPoints: readonly TimeScalePoint[], firstChangedPointIndex: number): void {
+	public setTimeScalePoints(newPoints: TimeScalePoint[], firstChangedPointIndex: number): void {
 		this._removeMarksSinceIndex(firstChangedPointIndex);
 
 		this._cache = null;

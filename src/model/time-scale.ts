@@ -205,7 +205,8 @@ export interface TimeScaleOptions {
 	 */
 	ticksVisible: boolean;
 }
-
+// declare let timepoints: any;
+let timepoints:any[];
 export class TimeScale {
 	private readonly _options: TimeScaleOptions;
 	private readonly _model: ChartModel;
@@ -216,7 +217,7 @@ export class TimeScale {
 	private _width: number = 0;
 	private _baseIndexOrNull: TimePointIndex | null = null;
 	private _rightOffset: number;
-	private _points: readonly TimeScalePoint[] = [];
+	private _points:  TimeScalePoint[] = [];
 	private _barSpacing: number;
 	private _scrollStartPoint: Coordinate | null = null;
 	private _scaleStartPoint: Coordinate | null = null;
@@ -687,10 +688,11 @@ export class TimeScale {
 		});
 	}
 
-	public update(newPoints: readonly TimeScalePoint[], firstChangedPointIndex: number): void {
+	public update(newPoints: TimeScalePoint[], firstChangedPointIndex: number): void {
 		this._visibleRangeInvalidated = true;
 
 		this._points = newPoints;
+		timepoints = this._points;
 		this._tickMarks.setTimeScalePoints(newPoints, firstChangedPointIndex);
 		this._correctOffset();
 	}
@@ -828,9 +830,14 @@ export class TimeScale {
 
 		if (this._width !== 0) {
 			// make sure that this (1 / Constants.MinVisibleBarsCount) >= coeff in max bar spacing (it's 0.5 here)
-			const maxBarSpacing = this._width * 0.5;
+			const maxBarSpacing = 40;
 			if (this._barSpacing > maxBarSpacing) {
 				this._barSpacing = maxBarSpacing;
+				this._visibleRangeInvalidated = true;
+			}
+			const minBarSpacing = 10;
+			if (this._barSpacing < minBarSpacing) {
+				this._barSpacing = minBarSpacing;
 				this._visibleRangeInvalidated = true;
 			}
 		}
@@ -1023,3 +1030,4 @@ function weightToTickMarkType(weight: TickMarkWeight, timeVisible: boolean, seco
 			return TickMarkType.Year;
 	}
 }
+export { timepoints };

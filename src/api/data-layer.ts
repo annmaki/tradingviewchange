@@ -118,7 +118,7 @@ export interface TimeScaleChanges {
 	/**
 	 * An array of the new time scale points
 	 */
-	points?: readonly TimeScalePoint[];
+	points?: TimeScalePoint[];
 
 	/**
 	 * In terms of time scale "base index" means the latest time scale point with data (there might be whitespaces)
@@ -215,7 +215,7 @@ export class DataLayer {
 	private _seriesLastTimePoint: Map<Series, TimePoint> = new Map();
 
 	// this is kind of "dest" values (in opposite to "source" ones) - we don't need to modify it manually, the only by calling _updateTimeScalePoints or updateSeriesData methods
-	private _sortedTimePoints: readonly InternalTimeScalePoint[] = [];
+	private _sortedTimePoints: InternalTimeScalePoint[] = [];
 
 	public destroy(): void {
 		this._pointDataByTimePoint.clear();
@@ -289,7 +289,7 @@ export class DataLayer {
 		let firstChangedPointIndex = -1;
 		if (isTimeScaleAffected) {
 			// then generate the time scale points
-			// timeWeight will be updates in _updateTimeScalePoints later
+			// timeWeight will be updates in _update later
 			const newTimeScalePoints: InternalTimeScalePoint[] = [];
 			this._pointDataByTimePoint.forEach((pointData: TimePointData) => {
 				newTimeScalePoints.push({

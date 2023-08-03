@@ -33,6 +33,10 @@ import { drawBackground, drawForeground, drawSourcePaneViews } from './draw-func
 import { ITimeAxisViewsGetter } from './iaxis-view-getters';
 import { MouseEventHandler, MouseEventHandlers, MouseEventHandlerTouchEvent, TouchMouseEvent } from './mouse-event-handler';
 import { PriceAxisStub, PriceAxisStubParams } from './price-axis-stub';
+import { timepoints } from '../model/time-scale';
+
+// import ChartApi from '../api/chart-api'
+
 
 const enum Constants {
 	BorderSize = 1,
@@ -72,7 +76,7 @@ export class TimeAxisWidget implements MouseEventHandlers, IDestroyable {
 	private _mouseDown: boolean = false;
 	private _size: Size = size({ width: 0, height: 0 });
 	private readonly _sizeChanged: Delegate<Size> = new Delegate();
-	private readonly _widthCache: TextWidthCache = new TextWidthCache(5);
+	// private readonly _widthCache: TextWidthCache = new TextWidthCache(5);
 	private _isSettingSize: boolean = false;
 
 	public constructor(chartWidget: ChartWidget) {
@@ -88,6 +92,8 @@ export class TimeAxisWidget implements MouseEventHandlers, IDestroyable {
 		this._rightStubCell.style.padding = '0';
 
 		this._cell = document.createElement('td');
+		this._cell.style.position = 'absolute';
+		this._cell.style.top = '70%';
 		this._cell.style.height = '25px';
 		this._cell.style.padding = '0';
 
@@ -422,35 +428,53 @@ export class TimeAxisWidget implements MouseEventHandlers, IDestroyable {
 
 			// draw base marks
 			ctx.font = this._baseFont();
-			for (const tickMark of tickMarks) {
-				if (tickMark.weight < maxWeight) {
-					const coordinate = tickMark.needAlignCoordinate ? this._alignTickMarkLabelCoordinate(ctx, tickMark.coord, tickMark.label) : tickMark.coord;
-					ctx.fillText(tickMark.label, coordinate, yText);
-				}
-			}
-			ctx.font = this._baseBoldFont();
-			for (const tickMark of tickMarks) {
-				if (tickMark.weight >= maxWeight) {
-					const coordinate = tickMark.needAlignCoordinate ? this._alignTickMarkLabelCoordinate(ctx, tickMark.coord, tickMark.label) : tickMark.coord;
-					ctx.fillText(tickMark.label, coordinate, yText);
-				}
-			}
+			// for (const tickMark of tickMarks) {
+			// 	if (tickMark.weight < maxWeight) {
+			// 		const coordinate = tickMark.needAlignCoordinate ? this._alignTickMarkLabelCoordinate(ctx, tickMark.coord, tickMark.label) : tickMark.coord;
+			// 		ctx.fillText(tickMark.label, coordinate, yText);
+			// 	}
+			// }
+			// ctx.font = this._baseBoldFont();
+			// for (const tickMark of tickMarks) {
+			// 	if (tickMark.weight >= maxWeight) {
+			// 		const coordinate = tickMark.needAlignCoordinate ? this._alignTickMarkLabelCoordinate(ctx, tickMark.coord, tickMark.label) : tickMark.coord;
+			// 		// ctx.fillText(tickMark.label, coordinate, yText);
+			// 	}
+			// }
+
+
+			// const candlestickSeries = chart.addCandlestickSeries();
+			// var timepoints = TimeScale.points
+			// @ts-ignore
+			var fromindex = Math.round(chart.timeScale().getVisibleLogicalRange().from);// @ts-ignore
+			var toindex = Math.round(chart.timeScale().getVisibleLogicalRange().to);  // @ts-ignore
+			var fromcoord = 0;  // @ts-ignore
+			var tocoord = window.innerWidth - 60; 
+			// var fromtotext = candlestickSeries.barsInLogicalRange(chart.timeScale().getVisibleLogicalRange());
+
+			// var fromtext = fromtotext.from.year+'年'+ fromtotext.from.month+'月'+  fromtotext.from.day+'日';
+			// var totext = fromtotext.to.year+'年' + fromtotext.to.month+'月'+ fromtotext.to.day+'日';
+			var fromtext = timepoints[fromindex]._internal_originalTime;
+            var totext = timepoints[toindex]._internal_originalTime;
+
+			ctx.fillText(fromtext, fromcoord + 50, yText);
+			ctx.fillText(totext, tocoord - 50, yText);
 		});
 	}
 
-	private _alignTickMarkLabelCoordinate(ctx: CanvasRenderingContext2D, coordinate: number, labelText: string): number {
-		const labelWidth = this._widthCache.measureText(ctx, labelText);
-		const labelWidthHalf = labelWidth / 2;
-		const leftTextCoordinate = Math.floor(coordinate - labelWidthHalf) + 0.5;
+	// private _alignTickMarkLabelCoordinate(ctx: CanvasRenderingContext2D, coordinate: number, labelText: string): number {
+	// 	const labelWidth = this._widthCache.measureText(ctx, labelText);
+	// 	const labelWidthHalf = labelWidth / 2;
+	// 	const leftTextCoordinate = Math.floor(coordinate - labelWidthHalf) + 0.5;
 
-		if (leftTextCoordinate < 0) {
-			coordinate = coordinate + Math.abs(0 - leftTextCoordinate);
-		} else if (leftTextCoordinate + labelWidth > this._size.width) {
-			coordinate = coordinate - Math.abs(this._size.width - (leftTextCoordinate + labelWidth));
-		}
+	// 	if (leftTextCoordinate < 0) {
+	// 		coordinate = coordinate + Math.abs(0 - leftTextCoordinate);
+	// 	} else if (leftTextCoordinate + labelWidth > this._size.width) {
+	// 		coordinate = coordinate - Math.abs(this._size.width - (leftTextCoordinate + labelWidth));
+	// 	}
 
-		return coordinate;
-	}
+	// 	return coordinate;
+	// }
 
 	private _drawLabels(sources: readonly IDataSource[], target: CanvasRenderingTarget2D): void {
 		const rendererOptions = this._getRendererOptions();
@@ -477,9 +501,9 @@ export class TimeAxisWidget implements MouseEventHandlers, IDestroyable {
 		return makeFont(this._fontSize(), this._options.fontFamily);
 	}
 
-	private _baseBoldFont(): string {
-		return makeFont(this._fontSize(), this._options.fontFamily, 'bold');
-	}
+	// private _baseBoldFont(): string {
+	// 	return makeFont(this._fontSize(), this._options.fontFamily, 'bold');
+	// }
 
 	private _getRendererOptions(): Readonly<TimeAxisViewRendererOptions> {
 		if (this._rendererOptions === null) {

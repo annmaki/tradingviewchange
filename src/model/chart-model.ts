@@ -696,7 +696,7 @@ export class ChartModel implements IDestroyable {
 		this._crosshair.updateAllViews();
 	}
 
-	public updateTimeScale(newBaseIndex: TimePointIndex | null, newPoints?: readonly TimeScalePoint[], firstChangedPointIndex?: number): void {
+	public updateTimeScale(newBaseIndex: TimePointIndex | null, newPoints?: TimeScalePoint[], firstChangedPointIndex?: number): void {
 		const oldFirstTime = this._timeScale.indexToTime(0 as TimePointIndex);
 
 		if (newPoints !== undefined && firstChangedPointIndex !== undefined) {
